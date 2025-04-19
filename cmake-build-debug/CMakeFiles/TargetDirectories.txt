@@ -1,0 +1,3 @@
+C:/Users/Gustavo Novais/Documents/faculdade/CPGR/cmake-build-debug/CMakeFiles/CPGR.dir
+C:/Users/Gustavo Novais/Documents/faculdade/CPGR/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Gustavo Novais/Documents/faculdade/CPGR/cmake-build-debug/CMakeFiles/rebuild_cache.dir
