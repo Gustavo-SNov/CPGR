@@ -6,6 +6,7 @@
 #include <vector>
 using namespace std;
 
+GLfloat zoomLevel = 2.0f; // Quanto maior, mais afastada
 vector<vector<GLfloat> > triangle = {{0.1f, 0.1f}, {0.4f, 0.1f}, {0.1f, 0.5f}};
 
 enum TypeTransformation {
@@ -31,7 +32,7 @@ vector<operation> operations;
 
 // Func. Callback -> Chamada sempre que a Janela for redimensionada
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
-
+void scrollCallback(GLFWwindow *window, double xoffset, double yoffset);
 void init();
 void execute();
 void draw();
@@ -75,12 +76,17 @@ void menu() {
                 execute();
                 draw();
                 break;
-            case 5:
-                int tamanho = operations.size();
-                for (int i=1; i<=tamanho; ++i) {
-                    operations.pop_back();
+            case 5: {
+                int tamanho = 0;
+                if (!operations.empty()) {
+                    tamanho = operations.size();
+                    for (int i = 1; i <= tamanho; ++i) {
+                        operations.pop_back();
+                    }
                 }
+
                 break;
+            }
             case 6:
                 cout << "Saindo do Programa!";
                 break;
@@ -100,8 +106,23 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glViewport(0, 0, width, height);
 }
+// Callback para scroll do mouse
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    // yoffset => Rolagem do Scroll do mouse => para cima: +1.0 , para baixo: -1.0
+    zoomLevel += yoffset * 0.1f;
+    zoomLevel = std::max(0.1f, zoomLevel); // Evitar zoom negativo
+}
 
 void init() {
+    // Ajuste de Projeção Ortográfica(2D)
+    glMatrixMode(GL_PROJECTION); // Matriz de Projeção: Como a câmera vê a cena
+    glLoadIdentity(); // Reseta transformações anteriores
+    glOrtho(-zoomLevel, zoomLevel, -zoomLevel, zoomLevel, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void draw() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Desenhando o Plano Cartesiano (x,y)
@@ -115,16 +136,12 @@ void init() {
 
     glPointSize(4.0f);
     glBegin(GL_POINTS);
-
     glColor3f(1.0, 1.0, 1.0);
     glVertex2f(0.1f, 0.1f);
     glVertex2f(0.4f, 0.1f);
     glVertex2f(0.1f, 0.5f);
-
     glEnd();
-}
 
-void draw() {
     glBegin(GL_TRIANGLES);
     glColor3f(0.8, 0.0, 0.5);
     for (auto &vertice: triangle) {
@@ -153,6 +170,7 @@ void execute() {
 
     // Define a função de callback para redimensionar a janela
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetScrollCallback(window, scrollCallback);
 
     while (!glfwWindowShouldClose(window)) {
         init();

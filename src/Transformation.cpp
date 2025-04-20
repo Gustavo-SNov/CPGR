@@ -11,11 +11,13 @@ void Transformation::escalaRelativaAoCentro() {
     GLfloat h, k;
     GLfloat sx = 2, sy = 2;
 
-    h = 0.1f;
-    k = 0.1f;
+
+    // Centro(h,k) é a Origem nesse caso
+    h = 0.0f;
+    k = 0.0f;
     glPushMatrix();
 
-    glTranslatef(h, k, 0.0f);
+    // glTranslatef(h, k, 0.0f);
     glScalef(sx, sy, 1.0f);
     glTranslatef(-h, -k, 0.0f);
 
@@ -27,13 +29,20 @@ void Transformation::escalaRelativaAoCentro() {
     glEnd();
 
     glPopMatrix();
+    // Deu certo com duas operações apenas pelo centro ser a origem?
+    //    R: Sim!
+    // O objeto não sofrerá translação nos seguintes casos:
+    // 1. Um dos vértices está na origem(0,0)
+    // 2. Centro do Objeto está na origem(0,0)
+    //    Como assim Centro do Objeto?
+    //    R: Média dos vértices => Centro do Objeto = ((X1 + ... + Xn)/n , (Y1 + ... + Yn)/n)
 
 
-    // Deu certo com duas operações apenas pelo centro ser a origem? Sim
-    // E se o centro for (0.2f, 0.2f) ? O centro sempre será a Origem(0,0)
-    // A questão é definir o ponto fixo! Como assim?
-    // Se não definirem um ponto fixo, então, será a origem.
-    // Caso definam um ponto fixo, levar esse ponto fixo até a origem e transformar.
+    // E se o centro não for a origem?
+    //    R: Então, sofrerá translação
+    // Por que ocorre translação?
+    //    R: Escala nada mais é que uma operação de proporção,
+    //    ou seja, se o centro do sistema mudou, deve-se colocar o objeto de forma proporcional
     h = 0.2f;
     k = 0.2f;
     glPushMatrix();
